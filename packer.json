@@ -1,15 +1,17 @@
 {
   "variables": {
-    "name": "{{ env `VM_NAME` }}",
-    "version": "{{ env `OPENWRT_VERSION` }}",
-    "base_dir": "{{ env `BASE_DIR` }}"
+    "vm_name": "{{ env `VM_NAME` }}",
+    "box_name": "{{ env `BOX_NAME` }}",
+    "build_dir": "{{ env `BUILD_DIR` }}",
+    "output_dir": "{{ env `OUTPUT_DIR` }}"
   },
   "provisioners": [
     {
       "type": "shell",
       "scripts": [
-        "{{ user `base_dir` }}/scripts/vagrant.sh",
-        "{{ user `base_dir` }}/scripts/cleanup.sh"
+        "scripts/network.sh",
+        "scripts/vagrant.sh",
+        "scripts/cleanup.sh"
       ],
       "start_retry_timeout": "15m",
       "expect_disconnect": "true"
@@ -22,9 +24,9 @@
         "<enter><wait>",
         "passwd <<EOF<enter>vagrant<enter>vagrant<enter>EOF<enter>",
         "uci delete network.lan<enter>",
-        "uci set network.lan=interface<enter>",
-        "uci set network.lan.ifname='eth0'<enter>",
-        "uci set network.lan.proto='dhcp'<enter>",
+        "uci set network.mng=interface<enter>",
+        "uci set network.mng.ifname='eth0'<enter>",
+        "uci set network.mng.proto='dhcp'<enter>",
         "uci commit<enter>",
         "fsync /etc/config/network<enter>",
         "/etc/init.d/network restart<enter>"
@@ -38,21 +40,21 @@
         ["modifyvm", "{{.Name}}", "--usbxhci", "off"]
       ],
       "type": "virtualbox-ovf",
-      "source_path": "{{ user `base_dir` }}/.build/{{ user `name` }}.ovf",
+      "source_path": "{{ user `build_dir` }}/{{ user `vm_name` }}.ovf",
       "guest_additions_mode": "disable",
       "headless": true,
       "ssh_username": "root",
       "ssh_password": "vagrant",
       "ssh_wait_timeout": "300s",
       "shutdown_command": "poweroff",
-      "vm_name": "{{ user `name` }}-{{ user `version` }}"
+      "vm_name": "{{ user `box_name` }}-{{ timestamp }}"
     }
   ],
   "post-processors": [
     {
       "type": "vagrant",
-      "vagrantfile_template": "{{ user `base_dir` }}/tpl/vagrantfile.rb",
-      "output": "{{ user `base_dir` }}/output/{{ user `name` }}-{{ user `version` }}.box"
+      "vagrantfile_template": "tpl/vagrantfile.rb",
+      "output": "{{ user `output_dir` }}/{{ user `box_name` }}.box"
     }
   ]
 }
