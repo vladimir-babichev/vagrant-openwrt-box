@@ -41,10 +41,8 @@ More information about Vagrant can be found [here](https://www.vagrantup.com/int
 
 ## Notes
 ### Login credentials
-```
-Username: root
-Password: vagrant
-```
+* Username: `root`
+* Password: `vagrant`
 
 ### Limitations
 Vagrant doesn't natively support OpenWrt ([see this issue](https://github.com/hashicorp/vagrant/issues/11790)). Due to this fact, features like `synced folders`, `automatic network configuration`, `shell provisioner` **do not work**.
