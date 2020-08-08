@@ -39,13 +39,28 @@ After startup Vagrant box will have 3 network adapters attached to it with the f
 
 More information about Vagrant can be found [here](https://www.vagrantup.com/intro/getting-started)
 
+### Inline Shell Scripts
+Remember to include `privileged: false` in provisioner configuration, otherwise the inline script will fail due to the absence of `sudo` package in the default distribution.
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "vladimir-babichev/openwrt-19.07.3"
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    opkg update
+    opkg remove wpad-mini
+    opkg install wpad
+  SHELL
+end
+```
+
 ## Notes
 ### Login credentials
 * Username: `root`
 * Password: `vagrant`
 
 ### Limitations
-Vagrant doesn't natively support OpenWrt ([see this issue](https://github.com/hashicorp/vagrant/issues/11790)). Due to this fact, features like `synced folders`, `automatic network configuration`, `shell provisioner` **do not work**.
+Vagrant doesn't natively support OpenWrt ([see this issue](https://github.com/hashicorp/vagrant/issues/11790)). Due to this fact, features like `synced folders`, `automatic network configuration` **do not work**.
 
 ### Network configuration
 Because of the limitations mentioned above network configuration has to be done manually and split into two stages:
