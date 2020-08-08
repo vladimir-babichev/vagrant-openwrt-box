@@ -37,8 +37,9 @@ After startup Vagrant box will have 3 network adapters attached to it with the f
 * `nic2` set to `NAT` and discovered as `eth1` (`wan`) interface
 * `nic3` set to `bridge` with `en0` and discovered as `eth2` (`lan`) interface
 
-More information about Vagrant can be found [here](https://www.vagrantup.com/intro/getting-started)
+More information about Vagrant can be found [here](https://www.vagrantup.com/intro/getting-started).
 
+## Provisioning
 ### Inline Shell Scripts
 Remember to include `privileged: false` in provisioner configuration, otherwise the inline script will fail due to the absence of `sudo` package in the default distribution.
 ```ruby
@@ -53,6 +54,9 @@ Vagrant.configure("2") do |config|
   SHELL
 end
 ```
+
+### Ansible Provisioner
+Complete example of ansible provisioner can be found [here](https://github.com/vladimir-babichev/vagrant-openwrt-ansible).
 
 ## Notes
 ### Login credentials
