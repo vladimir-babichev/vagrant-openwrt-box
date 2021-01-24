@@ -7,14 +7,14 @@ Image has 3 preconfigured network interfaces:
 
 ## Building
 To build a box simply run `make all`. Created Vagrant artifact will be stored in the `.output` folder.
-To build a specific OpenWrt version run `VERSION=19.07.3 make all`
+To build a specific OpenWrt version run `VERSION=19.07.5 make all`
 
 ## Using
 ### Simple use case
 For the simple use case with only one pre-provisioned interface (`mng`) you will need to create `Vagrantfile` with the following content:
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-19.07.3"
+  config.vm.box = "vladimir-babichev/openwrt-19.07"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 end
 ```
@@ -23,7 +23,7 @@ end
 For more advanced use cases, with more interfaces:
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-19.07.3"
+  config.vm.box = "vladimir-babichev/openwrt-19.07"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
   config.vm.provider "virtualbox" do |v|
@@ -44,7 +44,7 @@ More information about Vagrant can be found [here](https://www.vagrantup.com/int
 Remember to include `privileged: false` in provisioner configuration, otherwise the inline script will fail due to the absence of `sudo` package in the default distribution.
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-19.07.3"
+  config.vm.box = "vladimir-babichev/openwrt-19.07"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
@@ -64,7 +64,7 @@ Complete example of ansible provisioner can be found [here](https://github.com/v
 * Password: `vagrant`
 
 ### Limitations
-Vagrant doesn't natively support OpenWrt ([see this issue](https://github.com/hashicorp/vagrant/issues/11790)). Due to this fact, features like `synced folders`, `automatic network configuration` **do not work**.
+Vagrant doesn't natively support OpenWrt yet ([see this issue](https://github.com/hashicorp/vagrant/issues/11790)). Due to this fact, features like `synced folders`, `automatic network configuration` **do not work**.
 
 ### Network configuration
 Because of the limitations mentioned above network configuration has to be done manually and split into two stages:
