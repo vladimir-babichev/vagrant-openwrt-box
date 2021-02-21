@@ -6,7 +6,7 @@ export OUTPUT_DIR ?= $(ROOT_DIR)/.output
 export PACKER_CACHE_DIR ?= $(BUILD_DIR)/packer_cache
 
 export NAME ?= openwrt
-export VERSION ?= 19.07.5
+export VERSION ?= 19.07.7
 export TIMESTAMP := $(shell date +%s)
 export BOX_NAME ?= $(NAME)-$(VERSION)
 export VM_NAME ?= $(NAME)-$(VERSION)-$(TIMESTAMP)
