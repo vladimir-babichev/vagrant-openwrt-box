@@ -10,6 +10,7 @@
       "type": "shell",
       "scripts": [
         "scripts/network.sh",
+        "scripts/packages.sh",
         "scripts/vagrant.sh",
         "scripts/cleanup.sh"
       ],

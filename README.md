@@ -39,15 +39,27 @@ After startup Vagrant box will have 3 network adapters attached to it with the f
 
 More information about Vagrant can be found [here](https://www.vagrantup.com/intro/getting-started).
 
+### Synced folders
+Since [version 2.2.15](https://github.com/hashicorp/vagrant/blob/main/CHANGELOG.md#2215-march-30-2021) Vagrant supports [rsync synced folders](https://www.vagrantup.com/docs/synced-folders/rsync) for OpenWrt guest machines. By default, the content of the current folder synced into `/root` in the guest OS. To disable synchronization add the following snippet to your Vagrantfile:
+```ruby
+config.vm.synced_folder ".", "/vagrant", disabled: true
+```
+
+### Network configuration
+Vagrant does not support [`automatic network configuration`](https://github.com/hashicorp/vagrant/issues/12119) for OpenWrt. As a result, network setup split into two stages:
+1. Attachment of network adapters to a virtual machine in `Vagrant` file. See [examples above](#advanced-use-case).
+2. Network interface configuration from guest OS. See [this](packer.json#L29) and [this](scripts/network.sh).
+
+By default, preconfigured network interfaces set to DHCP mode.
+
 ## Provisioning
 ### Inline Shell Scripts
-Remember to include `privileged: false` in provisioner configuration, otherwise the inline script will fail due to the absence of `sudo` package in the default distribution.
 ```ruby
 Vagrant.configure("2") do |config|
   config.vm.box = "vladimir-babichev/openwrt-19.07"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+  config.vm.provision "shell", inline: <<-SHELL
     opkg update
     opkg remove wpad-mini
     opkg install wpad
@@ -59,16 +71,11 @@ end
 Complete example of ansible provisioner can be found [here](https://github.com/vladimir-babichev/vagrant-openwrt-ansible).
 
 ## Notes
-### Login credentials
+### Credentials
 * Username: `root`
 * Password: `vagrant`
 
-### Limitations
-Vagrant doesn't natively support OpenWrt yet ([see this issue](https://github.com/hashicorp/vagrant/issues/11790)). Due to this fact, features like `synced folders`, `automatic network configuration` **do not work**.
-
-### Network configuration
-Because of the limitations mentioned above network configuration has to be done manually and split into two stages:
-1. Attachment of network adapters to a virtual machine in `Vagrant` file. See [examples above](#advanced-use-case).
-2. Network interface configuration from inside guest OS. See [this](packer.json#L29) and [this](scripts/network.sh).
-
-By default, preconfigured network interfaces are set to DHCP mode.
+### Packages
+Following packages were added to the image to enable [Synced Folders](https://www.vagrantup.com/docs/synced-folders) capability:
+* `rsync`
+* `sudo`
