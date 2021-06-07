@@ -17,8 +17,13 @@ dirs: ## Create build directory
 
 .PHONY: fetch-image
 fetch-image: ## Fetch OpenWrt disk image
-	@@wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"
-	@@gzip -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz"
+	@@if [[ $(VERSION) =~ 21\..* ]]; then \
+		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
+		gzip -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
+	else \
+		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
+		gzip -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz"; \
+	fi
 
 .PHONY: convert-image
 convert-image: ## Convert RAW disk image to VDI format
