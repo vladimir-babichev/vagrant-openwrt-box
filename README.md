@@ -10,7 +10,7 @@ Image has 3 preconfigured network interfaces:
 ## Building
 
 To build a box simply run `make all`. Created Vagrant artifact will be stored in the `.output` folder.
-To build a specific OpenWrt version run `VERSION=19.07.7 make all`
+To build a specific OpenWrt version run `VERSION=21.02.0-rc3 make all`
 
 ## Using
 
@@ -18,7 +18,7 @@ To build a specific OpenWrt version run `VERSION=19.07.7 make all`
 
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-19.07"
+  config.vm.box = "vladimir-babichev/openwrt-21.02"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 end
 ```
@@ -27,7 +27,7 @@ end
 
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-19.07"
+  config.vm.box = "vladimir-babichev/openwrt-21.02"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
   config.vm.provider "virtualbox" do |v|
@@ -66,7 +66,7 @@ By default, preconfigured network interfaces set to DHCP mode.
 
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-19.07"
+  config.vm.box = "vladimir-babichev/openwrt-21.02"
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
   config.vm.provision "shell", inline: <<-SHELL
