@@ -6,7 +6,7 @@ export OUTPUT_DIR ?= $(ROOT_DIR)/.output
 export PACKER_CACHE_DIR ?= $(BUILD_DIR)/packer_cache
 
 export NAME ?= openwrt
-export VERSION ?= 21.02.0-rc3
+export VERSION ?= 21.02.0
 export TIMESTAMP := $(shell date +%s)
 export BOX_NAME ?= $(NAME)-$(VERSION)
 export VM_NAME ?= $(NAME)-$(VERSION)-$(TIMESTAMP)
@@ -46,7 +46,11 @@ clean: ## Cleanup
 	rm -rf $(BUILD_DIR) $(OUTPUT_DIR)
 
 .PHONY: all
-all: dirs fetch-image convert-image vm build ## Run all steps
+all: dirs fetch-image convert-image vm build shasums ## Run all steps
+
+.PHONY: shasums
+shasums:
+	@shasum -a 512 $(OUTPUT_DIR)/*.box
 
 .PHONY: help
 help: ## This help
