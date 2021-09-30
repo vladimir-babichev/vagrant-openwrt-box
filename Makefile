@@ -16,7 +16,7 @@ dirs: ## Create build directory
 	@@mkdir -p "$(BUILD_DIR)" "$(OUTPUT_DIR)"
 
 .PHONY: fetch-image
-fetch-image: ## Fetch OpenWrt disk image
+fetch-image: dirs ## Fetch OpenWrt disk image
 	@@if [[ $(VERSION) =~ 21\..* ]]; then \
 		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
 		gzip -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
@@ -26,11 +26,11 @@ fetch-image: ## Fetch OpenWrt disk image
 	fi
 
 .PHONY: convert-image
-convert-image: ## Convert RAW disk image to VDI format
+convert-image: fetch-image ## Convert RAW disk image to VDI format
 	VBoxManage convertfromraw --format VDI "$(BUILD_DIR)/openwrt-$(VERSION).img" "$(BUILD_DIR)/openwrt-$(VERSION).vdi"
 
-.PHONY: vm-image
-vm: ## Create VirtualBox machine image
+.PHONY: vm
+vm: convert-image ## Create VirtualBox machine image
 	VBoxManage createvm --name "$(VM_NAME)" --ostype "Linux_64" --register
 	VBoxManage storagectl "$(VM_NAME)" --name SATA --add sata --controller IntelAHCI --portcount 1
 	VBoxManage storageattach "$(VM_NAME)" --storagectl SATA --port 0 --device 0 --type hdd --medium "$(BUILD_DIR)/openwrt-$(VERSION).vdi"
@@ -38,18 +38,27 @@ vm: ## Create VirtualBox machine image
 	VBoxManage unregistervm "$(VM_NAME)" --delete
 
 .PHONY: build
-build: ## Build Vagrant Box
+build: vm ## Build all boxes
 	packer build packer.json
+
+.PHONY: build-vb
+build-vb: vm ## Build Vagrant Box only
+	packer build -only=virtualbox-ovf packer.json
+
+.PHONY: build-lv
+build-lv: fetch-image ## Build Libvirt/Qemu Box only
+	packer build -only=qemu packer.json
 
 .PHONY: clean
 clean: ## Cleanup
 	rm -rf $(BUILD_DIR) $(OUTPUT_DIR)
 
 .PHONY: all
-all: dirs fetch-image convert-image vm build shasums ## Run all steps
+all: build shasums
 
 .PHONY: shasums
 shasums:
+	@echo "\n\n"
 	@shasum -a 512 $(OUTPUT_DIR)/*.box
 
 .PHONY: help
