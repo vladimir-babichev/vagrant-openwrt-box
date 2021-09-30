@@ -19,10 +19,10 @@ dirs: ## Create build directory
 fetch-image: dirs ## Fetch OpenWrt disk image
 	@@if [[ $(VERSION) =~ 21\..* ]]; then \
 		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
-		gzip -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
+		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
 	else \
 		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
-		gzip -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz"; \
+		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz"; \
 	fi
 
 .PHONY: convert-image
@@ -39,15 +39,15 @@ vm: convert-image ## Create VirtualBox machine image
 
 .PHONY: build
 build: vm ## Build all boxes
-	packer build packer.json
+	packer build build.pkr.hcl
 
 .PHONY: build-vb
 build-vb: vm ## Build Vagrant Box only
-	packer build -only=virtualbox-ovf packer.json
+	packer build -only=virtualbox-ovf.openwrt-virtualbox build.pkr.hcl
 
 .PHONY: build-lv
 build-lv: fetch-image ## Build Libvirt/Qemu Box only
-	packer build -only=qemu packer.json
+	packer build -only=qemu.openwrt-libvirt build.pkr.hcl
 
 .PHONY: clean
 clean: ## Cleanup
@@ -58,7 +58,7 @@ all: build shasums
 
 .PHONY: shasums
 shasums:
-	@echo "\n\n"
+	@echo ""
 	@shasum -a 512 $(OUTPUT_DIR)/*.box
 
 .PHONY: help
