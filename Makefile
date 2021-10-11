@@ -54,10 +54,10 @@ clean: ## Cleanup
 	rm -rf $(BUILD_DIR) $(OUTPUT_DIR)
 
 .PHONY: all
-all: build shasums
+all: build shasums ## Build all boxes and print SHA sums
 
 .PHONY: shasums
-shasums:
+shasums: ## Print SHA sums
 	@echo ""
 	@shasum -a 512 $(OUTPUT_DIR)/*.box
 
