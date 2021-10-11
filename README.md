@@ -9,8 +9,10 @@ Image has 3 preconfigured network interfaces:
 
 ## Building
 
-To build a box simply run `make all`. Created Vagrant artifact will be stored in the `.output` folder.
+To build all boxes simply run `make all`. Created Vagrant artifact will be stored in the `.output` folder.
 To build a specific OpenWrt version run `VERSION=21.02.0-rc3 make all`
+To build the Virtualbox box only run: `make build-vb`
+To build the Libvirt box only run: `make build-lv`
 
 ## Using
 
@@ -38,6 +40,7 @@ end
 ```
 
 Provisioned VM will have 3 network adapters:
+
 * `nic1` set to `NAT` and discovered as `eth0` (`mng`) interface
 * `nic2` set to `NAT` and discovered as `eth1` (`wan`) interface
 * `nic3` set to `bridge` with `en0` and discovered as `eth2` (`lan`) interface
@@ -55,6 +58,7 @@ config.vm.synced_folder ".", "/root", disabled: true
 ### Network configuration
 
 Vagrant does not support [`automatic network configuration`](https://github.com/hashicorp/vagrant/issues/12119) for OpenWrt. As a result, network setup split into two stages:
+
 1. Attachment of network adapters to a virtual machine. See [examples above](#advanced-use-case).
 2. Network interface configuration from guest OS. See [this](packer.json#L29) and [this](scripts/network.sh).
 
