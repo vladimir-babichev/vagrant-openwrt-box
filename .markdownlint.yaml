@@ -1,0 +1,7 @@
+---
+# https://github.com/DavidAnson/markdownlint/blob/v0.20.4/doc/Rules.md#md013---line-length
+MD013: false
+
+# https://github.com/DavidAnson/markdownlint/blob/v0.20.4/doc/Rules.md#md024---multiple-headings-with-the-same-content
+MD024:
+  siblings_only: true

@@ -1,15 +1,24 @@
 SHELL := bash
 
-export ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+export ROOT_DIR := $(shell git rev-parse --show-toplevel)
 export BUILD_DIR ?= $(ROOT_DIR)/.build
 export OUTPUT_DIR ?= $(ROOT_DIR)/.output
 export PACKER_CACHE_DIR ?= $(BUILD_DIR)/packer_cache
 
 export NAME ?= openwrt
-export VERSION ?= 21.02.0
+export VERSION ?= 21.02.1
 export TIMESTAMP := $(shell date +%s)
 export BOX_NAME ?= $(NAME)-$(VERSION)
 export VM_NAME ?= $(NAME)-$(VERSION)-$(TIMESTAMP)
+
+
+.PHONY: lint
+lint: ## Run pre-commit checks
+	pre-commit run --color=always --show-diff-on-failure
+
+.PHONY: lint-all
+lint-all: ## Run pre-commit checks against all files
+	pre-commit run --color=always --show-diff-on-failure --all-files
 
 .PHONY: dirs
 dirs: ## Create build directory
