@@ -1,4 +1,5 @@
 #!/bin/ash
+# shellcheck shell=dash
 
 set -eux
 
