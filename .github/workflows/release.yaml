@@ -2,10 +2,11 @@ name: Release
 
 on:
   push:
+    tags:
+      - "*.*.*-*.*"
 
-  pull_request:
-    branches:
-      - main
+permissions:
+  contents: write
 
 jobs:
   VirtualBox:
@@ -19,4 +20,13 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          make build-vb
+          TAG=${GITHUB_REF##*v}
+          VERSION=${TAG%-*} make build-vb
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          files: .output/*.box
