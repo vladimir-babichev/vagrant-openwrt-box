@@ -23,8 +23,8 @@ variable "vm_name" {
   default = "${env("VM_NAME")}"
 }
 
-locals { 
-  timestamp    = regex_replace(timestamp(), "[- TZ:]", "")
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
   boot_command = [
     "<enter><wait>",
     "passwd <<EOF<enter>vagrant<enter>vagrant<enter>EOF<enter>",
@@ -71,7 +71,7 @@ source "virtualbox-ovf" "openwrt-virtualbox" {
   ssh_password         = "vagrant"
   ssh_username         = "root"
   ssh_wait_timeout     = "300s"
-  vboxmanage           = [
+  vboxmanage = [
     ["modifyvm", "{{ .Name }}", "--audio", "none"],
     ["modifyvm", "{{ .Name }}", "--boot1", "disk"],
     ["modifyvm", "{{ .Name }}", "--memory", "128", "--vram", 16],
@@ -79,7 +79,7 @@ source "virtualbox-ovf" "openwrt-virtualbox" {
     ["modifyvm", "{{ .Name }}", "--usb", "off"],
     ["modifyvm", "{{ .Name }}", "--usbxhci", "off"]
   ]
-  vm_name              = "${var.box_name}-${local.timestamp}"
+  vm_name = "${var.box_name}-${local.timestamp}"
 }
 
 # a build block invokes sources and runs provisioning steps on them. The
