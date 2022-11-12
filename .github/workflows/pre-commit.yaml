@@ -27,7 +27,7 @@ jobs:
           key: pre-commit-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Install Packer
-        uses: hashicorp-contrib/setup-packer@v1
+        uses: hashicorp-contrib/setup-packer@v2
 
       - name: Install Shellcheck
         run: |
