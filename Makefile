@@ -6,7 +6,7 @@ export OUTPUT_DIR ?= $(ROOT_DIR)/.output
 export PACKER_CACHE_DIR ?= $(BUILD_DIR)/packer_cache
 
 export NAME ?= openwrt
-export VERSION ?= 21.02.1
+export VERSION ?= 22.03.2
 export TIMESTAMP := $(shell date +%s)
 export BOX_NAME ?= $(NAME)-$(VERSION)
 export VM_NAME ?= $(NAME)-$(VERSION)-$(TIMESTAMP)
@@ -26,12 +26,12 @@ dirs: ## Create build directory
 
 .PHONY: fetch-image
 fetch-image: dirs ## Fetch OpenWrt disk image
-	@@if [[ $(VERSION) =~ 21\..* ]]; then \
-		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
-		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
-	else \
+	@@if [[ $(VERSION) =~ 19\..* ]]; then \
 		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
 		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz"; \
+	else \
+		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
+		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
 	fi
 
 .PHONY: convert-image
