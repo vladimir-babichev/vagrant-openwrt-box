@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Python
         uses: actions/setup-python@v2
@@ -21,13 +21,13 @@ jobs:
         run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
 
       - name: Configure cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Install Packer
-        uses: hashicorp-contrib/setup-packer@v1
+        uses: hashicorp-contrib/setup-packer@v2
 
       - name: Install Shellcheck
         run: |
