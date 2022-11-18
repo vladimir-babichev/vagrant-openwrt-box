@@ -1,42 +1,42 @@
-name: pre-commit
+# name: pre-commit
 
-on:
-  push:
+# on:
+#   push:
 
-  pull_request:
-    branches:
-      - main
+#   pull_request:
+#     branches:
+#       - main
 
-jobs:
-  pre-commit:
-    runs-on: macos-10.15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+# jobs:
+#   pre-commit:
+#     runs-on: macos-10.15
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
 
-      - name: Install Python
-        uses: actions/setup-python@v2
+#       - name: Install Python
+#         uses: actions/setup-python@v2
 
-      - name: Set PY variable to for pre-commit cache
-        run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+#       - name: Set PY variable to for pre-commit cache
+#         run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
 
-      - name: Configure cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pre-commit
-          key: pre-commit-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
+#       - name: Configure cache
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.cache/pre-commit
+#           key: pre-commit-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
-      - name: Install Packer
-        uses: hashicorp-contrib/setup-packer@v2
+#       - name: Install Packer
+#         uses: hashicorp-contrib/setup-packer@v2
 
-      - name: Install Shellcheck
-        run: |
-          brew install shellcheck
+#       - name: Install Shellcheck
+#         run: |
+#           brew install shellcheck
 
-      - name: Install pre-commit
-        run: |
-          pip install pre-commit
+#       - name: Install pre-commit
+#         run: |
+#           pip install pre-commit
 
-      - name: Run pre-commit
-        run: |
-          make lint-all
+#       - name: Run pre-commit
+#         run: |
+#           make lint-all
