@@ -15,17 +15,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Python
-        uses: actions/setup-python@v2
-
-      - name: Set PY variable to for pre-commit cache
-        run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-
-      - name: Configure cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pre-commit
-          key: pre-commit-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
-
+        uses: actions/setup-python@v4
+        
       - name: Install Packer
         uses: hashicorp-contrib/setup-packer@v2
 
@@ -33,10 +24,5 @@ jobs:
         run: |
           brew install shellcheck
 
-      - name: Install pre-commit
-        run: |
-          pip install pre-commit
-
       - name: Run pre-commit
-        run: |
-          make lint-all
+        uses: pre-commit/action@v3.0.0
