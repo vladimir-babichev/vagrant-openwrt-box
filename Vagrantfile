@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "vladimir-babichev/openwrt-21.02"
-  # config.vm.box_version = "0.3.0"
+  config.vm.box = "vladimir-babichev/openwrt-22.03"
+  # config.vm.box_version = "0.2.0"
 
   # Uncomment bellow for continuous folder sync
   # config.trigger.after :up do |t|

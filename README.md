@@ -10,7 +10,7 @@ Image has 3 preconfigured network interfaces:
 ## Building
 
 * To build all boxes simply run `make all`. Created Vagrant artifact will be stored in the `.output` folder.
-* To build a specific OpenWrt version run `VERSION=21.02.1 make all`
+* To build a specific OpenWrt version run `VERSION=22.03.4 make all`
 * To build the Virtualbox box only run: `make build-vb`
 * To build the Libvirt box only run: `make build-lv`
 
