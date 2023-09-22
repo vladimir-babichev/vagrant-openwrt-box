@@ -11,6 +11,10 @@ export TIMESTAMP := $(shell date +%s)
 export BOX_NAME ?= $(NAME)-$(VERSION)
 export VM_NAME ?= $(NAME)-$(VERSION)-$(TIMESTAMP)
 
+IMG_FILE := $(BUILD_DIR)/openwrt-$(VERSION).img
+GZ_FILE := $(IMG_FILE).gz
+VDI_FILE := $(BUILD_DIR)/openwrt-$(VERSION).vdi
+
 
 .PHONY: lint
 lint: ## Run pre-commit checks
@@ -24,25 +28,25 @@ lint-all: ## Run pre-commit checks against all files
 dirs: ## Create build directory
 	@@mkdir -p "$(BUILD_DIR)" "$(OUTPUT_DIR)"
 
-.PHONY: fetch-image
-fetch-image: dirs ## Fetch OpenWrt disk image
+$(GZ_FILE): | dirs ## Fetch OpenWrt disk image
 	@@if [[ $(VERSION) =~ 19\..* ]]; then \
-		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
-		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz"; \
+		wget -O "$@" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
 	else \
-		wget -O "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
-		gzip -f -d "$(BUILD_DIR)/openwrt-$(VERSION).img.gz" || exit 0; \
+		wget -O "$@" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
 	fi
 
-.PHONY: convert-image
-convert-image: fetch-image ## Convert RAW disk image to VDI format
-	VBoxManage convertfromraw --format VDI "$(BUILD_DIR)/openwrt-$(VERSION).img" "$(BUILD_DIR)/openwrt-$(VERSION).vdi"
+.INTERMEDIATE: $(IMG_FILE)
+$(IMG_FILE): $(GZ_FILE) ## Decompress OpenWrt disk image
+	@gzip -k -f -d $^ || exit 0
+
+$(VDI_FILE): $(IMG_FILE) ## Convert RAW disk image to VDI format
+	VBoxManage convertfromraw --format VDI $^ $@
 
 .PHONY: vm
-vm: convert-image ## Create VirtualBox machine image
+vm: $(VDI_FILE) ## Create VirtualBox machine image
 	VBoxManage createvm --name "$(VM_NAME)" --ostype "Linux_64" --register
 	VBoxManage storagectl "$(VM_NAME)" --name SATA --add sata --controller IntelAHCI --portcount 1
-	VBoxManage storageattach "$(VM_NAME)" --storagectl SATA --port 0 --device 0 --type hdd --medium "$(BUILD_DIR)/openwrt-$(VERSION).vdi"
+	VBoxManage storageattach "$(VM_NAME)" --storagectl SATA --port 0 --device 0 --type hdd --medium $^
 	VBoxManage export "$(VM_NAME)" --output "$(BUILD_DIR)/$(VM_NAME).ovf"
 	VBoxManage unregistervm "$(VM_NAME)" --delete
 
