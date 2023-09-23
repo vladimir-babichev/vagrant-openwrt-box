@@ -11,6 +11,8 @@ export TIMESTAMP := $(shell date +%s)
 export BOX_NAME ?= $(NAME)-$(VERSION)
 export VM_NAME ?= $(NAME)-$(VERSION)-$(TIMESTAMP)
 
+export MIRROR_URL ?= https://downloads.openwrt.org
+
 IMG_FILE := $(BUILD_DIR)/openwrt-$(VERSION).img
 GZ_FILE := $(IMG_FILE).gz
 VDI_FILE := $(BUILD_DIR)/openwrt-$(VERSION).vdi
@@ -30,9 +32,9 @@ dirs: ## Create build directory
 
 $(GZ_FILE): | dirs ## Fetch OpenWrt disk image
 	@@if [[ $(VERSION) =~ 19\..* ]]; then \
-		wget -O "$@" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
+		wget -O "$@" "$(MIRROR_URL)/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-combined-ext4.img.gz"; \
 	else \
-		wget -O "$@" "https://downloads.openwrt.org/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
+		wget -O "$@" "$(MIRROR_URL)/releases/$(VERSION)/targets/x86/64/openwrt-$(VERSION)-x86-64-generic-ext4-combined.img.gz"; \
 	fi
 
 .INTERMEDIATE: $(IMG_FILE)

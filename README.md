@@ -13,6 +13,7 @@ Image has 3 preconfigured network interfaces:
 * To build a specific OpenWrt version run `VERSION=22.03.4 make all`
 * To build the Virtualbox box only run: `make build-vb`
 * To build the Libvirt box only run: `make build-lv`
+* To build with a particular mirror server run `MIRROR_URL="https://mirrors.aliyun.com/openwrt" make all`
 
 ## Using
 

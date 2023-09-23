@@ -23,6 +23,11 @@ variable "vm_name" {
   default = "${env("VM_NAME")}"
 }
 
+variable "mirror_url" {
+  type    = string
+  default = "${env("MIRROR_URL")}"
+}
+
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
   boot_command = [
@@ -94,6 +99,7 @@ build {
   provisioner "shell" {
     expect_disconnect   = "true"
     scripts             = ["scripts/network.sh", "scripts/packages.sh", "scripts/vagrant.sh", "scripts/cleanup.sh"]
+    environment_vars    = ["MIRROR_URL=${var.mirror_url}"]
     start_retry_timeout = "15m"
   }
 
