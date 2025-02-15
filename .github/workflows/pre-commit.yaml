@@ -20,7 +20,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install Packer
-        uses: hashicorp-contrib/setup-packer@v2
+        uses: hashicorp-contrib/setup-packer@v3
 
       - name: Install Shellcheck
         run: |
