@@ -21,7 +21,7 @@ repos:
         name: Shellcheck
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.44.0
+    rev: v0.49.1
     hooks:
       - id: markdownlint
         name: Markdownlint
